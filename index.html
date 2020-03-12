@@ -1,0 +1,139 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Visualizing a Binary Tree in Javascript - Hein Htet Aung
+    </title>
+    <script language="javascript" type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
+    <script language="javascript" type="text/javascript" src="node.js"></script>
+    <script language="javascript" type="text/javascript" src="tree.js"></script>
+</head>
+
+<body style="background-color: #333333; padding: 0; margin: 0;">
+    <div style="background-color: white; padding: 20px;">
+        <div>
+            <h1>Visualizing a Binary Tree in Javascript</h1>
+            <h2>Analysis of Algorithms</h2>
+        </div>
+        <br>
+        <label for="node">Add a node:</label> <input type="number" name="node" id="node" min="-99" max="99"><input
+            type="button" value="Add" onclick="addNode()">
+        <label for="findNode">Find a node:</label>
+        <input type="number" name="findNode" id="findNode" min="-99" max="99"><input type="button" value="Find"
+            onclick="findNode()">
+
+        <div style="display: inline-flex; border: 1px solid gray;width: 300px;padding: 5px 10px;border-radius: 4px;"
+            id="status">Status:</div>
+        <p><em><q>Input limit: -99 &le; node &le; 99</q></em></p>
+        <p><small><a href="./credits.html">Credits</a> <a href="https://github.com/hnhtag/visualizing-binary-tree">Source code</a></small></p>
+        <!-- <label for="removeNode">Remove: </label> <input type="number" name="removeNode" id="removeNode" min="-99"
+            max="99">
+        <input type="button" value="Remove" onclick="removeNode()">
+        <input type="button" value="Refresh" onclick="setup()"> -->
+
+    </div>
+    <br><br>
+    <div style="height: 10%;"></div>
+    <script>
+
+        var tree = new Tree();
+        var newNodeText;
+        var findNodeText;
+        // var removeNodeText;
+        var nodes = [10, 9, 11];
+
+        var newNodeTag = document.getElementById("node")
+        var findNodeTag = document.getElementById("findNode")
+        // var removeNodeTag = document.getElementById("removeNode")
+        var statusTag = document.getElementById("status");
+
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+
+        function setup() {
+            console.log(nodes);
+            createCanvas(w - (w * 0.1), h - (h * 0.2));
+            background(51);
+            for (var i = 0; i < nodes.length; i++) {
+                tree.addValue(nodes[i]);
+            }
+            tree.traverse();
+        }
+
+        function addNode() {
+            newNodeText = newNodeTag.value;
+            if (!newNodeText || newNodeText > 99 || newNodeText < -99) return;
+            var res = nodes.find((node) => node == newNodeText)
+            if (!!res) return
+            nodes.push(Number.parseInt(newNodeText));
+            statusTag.innerHTML = "Status: node " + newNodeText + " is added.";
+            statusTag.style.color = "green";
+            clearStatus();
+            setup(nodes);
+        }
+
+        function findNode() {
+            findNodeText = findNodeTag.value;
+            if (!findNodeText || findNodeText > 99 || findNodeText < -99) return;
+            var result = tree.search(findNodeText);
+            if (result == null) {
+                console.log('not found');
+                statusTag.style.color = "red";
+                statusTag.innerHTML = "Status: node " + findNodeText + " is not found.";
+            } else {
+                console.log(result);
+                statusTag.style.color = "green";
+                statusTag.innerHTML = "Status: node " + findNodeText + " is found.";
+
+                ellipse(result.x, result.y, 40, 40);
+                setTimeout(() => {
+                    setup()
+                }, 2000);
+            }
+            clearStatus()
+        }
+
+        // function removeNode() {
+        //     removeNodeText = removeNodeTag.value
+        //     if (!removeNodeText || removeNodeText > 99 || removeNodeText < -99) return
+        //     console.log("remove", removeNodeText);
+        //     nodes = nodes.filter(node => node != removeNodeText);
+        //     setup(nodes)
+        // }
+
+        // event listener
+        newNodeTag.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                addNode()
+            }
+        });
+
+        findNodeTag.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                findNode()
+            }
+        });
+
+        // removeNodeTag.addEventListener("keyup", function (event) {
+        //     // Number 13 is the "Enter" key on the keyboard
+        //     if (event.keyCode === 13) {
+        //         event.preventDefault();
+        //         removeNode()
+        //     }
+        // });
+
+        function clearStatus() {
+            setTimeout(() => {
+                statusTag.style.color = "";
+                statusTag.innerHTML = "Status:"
+            }, 3000);
+        }
+
+    </script>
+</body>
+
+</html>
